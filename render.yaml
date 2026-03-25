@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: aqi-linear-regression-api
+    env: python
+    plan: free
+    buildCommand: pip install -r summative/API/requirements.txt
+    startCommand: uvicorn summative.API.prediction:app --host 0.0.0.0 --port $PORT
