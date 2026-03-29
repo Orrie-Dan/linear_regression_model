@@ -15,7 +15,13 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'AQI Predictor',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
+        colorScheme: const ColorScheme.dark(
+          primary: Color(0xFF5EE0B2),
+          secondary: Color(0xFF8B94A7),
+          surface: Color(0xFF20222A),
+          error: Color(0xFFFF6B6B),
+        ),
+        scaffoldBackgroundColor: const Color(0xFF111318),
         useMaterial3: true,
       ),
       home: const PredictPage(),
@@ -48,7 +54,7 @@ class PredictPage extends StatefulWidget {
 
 class _PredictPageState extends State<PredictPage> {
   // Update these to match your deployed FastAPI service.
-  static const String baseUrl = 'http://127.0.0.1:8000';
+  static const String baseUrl = 'https://linear-regression-model-cmw6.onrender.com';
   static const String pathToPredict = '/predict';
 
   static const List<_FieldSpec> _specs = [
@@ -169,13 +175,40 @@ class _PredictPageState extends State<PredictPage> {
   }
 
   Widget _buildField(_FieldSpec spec) {
-    return TextFormField(
-      controller: _controllers[spec.key],
-      keyboardType: const TextInputType.numberWithOptions(decimal: true),
-      decoration: InputDecoration(
-        labelText: spec.label,
-        hintText: spec.hint,
-        border: const OutlineInputBorder(),
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      decoration: BoxDecoration(
+        color: const Color(0xFF292C34),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: const Color(0xFF343843)),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 10,
+            height: 10,
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              color: Color(0xFF5EE0B2),
+            ),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: TextFormField(
+              controller: _controllers[spec.key],
+              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              style: const TextStyle(color: Colors.white),
+              decoration: InputDecoration(
+                labelText: spec.label,
+                hintText: spec.hint,
+                labelStyle: const TextStyle(color: Colors.white70),
+                hintStyle: const TextStyle(color: Colors.white38),
+                isDense: true,
+                border: InputBorder.none,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -183,24 +216,75 @@ class _PredictPageState extends State<PredictPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('AQI Predictor'),
-      ),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(18),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Text(
-                'Enter pollutant values within the allowed ranges, then press Predict.',
-                style: TextStyle(fontSize: 14),
+              Container(
+                padding: const EdgeInsets.all(18),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF191C22),
+                  borderRadius: BorderRadius.circular(24),
+                  border: Border.all(color: const Color(0xFF2C2F38)),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Smart Air Control',
+                      style: TextStyle(
+                        fontSize: 23,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    const Text(
+                      'AQI prediction dashboard',
+                      style: TextStyle(color: Colors.white54),
+                    ),
+                    const SizedBox(height: 14),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF242832),
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                            child: const Text(
+                              'Home status\nNight mode',
+                              style: TextStyle(color: Colors.white70),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF242832),
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                          child: const Icon(Icons.menu, color: Colors.white70),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 14),
               Card(
-                elevation: 1,
+                elevation: 0,
+                color: const Color(0xFF1A1E25),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(22),
+                  side: const BorderSide(color: Color(0xFF2C2F38)),
+                ),
                 child: Padding(
-                  padding: const EdgeInsets.all(12),
+                  padding: const EdgeInsets.all(14),
                   child: LayoutBuilder(
                     builder: (context, constraints) {
                       final crossAxisCount = constraints.maxWidth >= 700 ? 2 : 1;
@@ -210,9 +294,9 @@ class _PredictPageState extends State<PredictPage> {
                         itemCount: _specs.length,
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: crossAxisCount,
-                          mainAxisSpacing: 10,
-                          crossAxisSpacing: 10,
-                          childAspectRatio: 3,
+                          mainAxisSpacing: 12,
+                          crossAxisSpacing: 12,
+                          childAspectRatio: 2.9,
                         ),
                         itemBuilder: (context, index) => _buildField(_specs[index]),
                       );
@@ -220,10 +304,16 @@ class _PredictPageState extends State<PredictPage> {
                   ),
                 ),
               ),
-              const SizedBox(height: 14),
+              const SizedBox(height: 16),
               SizedBox(
-                height: 48,
+                height: 54,
                 child: FilledButton(
+                  style: FilledButton.styleFrom(
+                    backgroundColor: const Color(0xFF5EE0B2),
+                    foregroundColor: const Color(0xFF0F1618),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                    textStyle: const TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
+                  ),
                   onPressed: _isLoading ? null : _predict,
                   child: _isLoading
                       ? const SizedBox(
@@ -234,37 +324,50 @@ class _PredictPageState extends State<PredictPage> {
                       : const Text('Predict'),
                 ),
               ),
-              const SizedBox(height: 14),
+              const SizedBox(height: 16),
               Card(
-                elevation: 1,
-                color: _errorText == null ? Colors.white : Colors.red.shade50,
+                elevation: 0,
+                color: _errorText == null ? const Color(0xFF1A1E25) : const Color(0xFF342124),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(18),
+                  side: BorderSide(
+                    color: _errorText == null ? const Color(0xFF2C2F38) : const Color(0xFF5F3237),
+                  ),
+                ),
                 child: Padding(
-                  padding: const EdgeInsets.all(12),
+                  padding: const EdgeInsets.all(14),
                   child: _isLoading
-                      ? const Text('Calculating prediction...')
+                      ? const Text(
+                          'Calculating prediction...',
+                          style: TextStyle(color: Colors.white70),
+                        )
                       : _errorText != null
                           ? Text(
                               _errorText!,
                               style: TextStyle(
-                                color: Colors.red.shade900,
+                                color: Colors.red.shade200,
                                 fontWeight: FontWeight.w600,
                               ),
                             )
                           : _resultText != null
                               ? Text(
                                   _resultText!,
-                                  style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 18,
+                                    color: Color(0xFF5EE0B2),
+                                  ),
                                 )
                               : const Text(
                                   'Prediction result will appear here.',
-                                  style: TextStyle(color: Colors.black54),
+                                  style: TextStyle(color: Colors.white54),
                                 ),
                 ),
               ),
               const SizedBox(height: 8),
               Text(
                 'Endpoint: $baseUrl$pathToPredict',
-                style: TextStyle(color: Colors.black54, fontSize: 12),
+                style: const TextStyle(color: Colors.white38, fontSize: 12),
               ),
             ],
           ),

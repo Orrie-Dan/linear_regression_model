@@ -35,6 +35,6 @@ Swagger UI:
    - Build command: `pip install -r summative/API/requirements.txt`
    - Start command: `uvicorn summative.API.prediction:app --host 0.0.0.0 --port $PORT`
 4. After deployment, open:
-   - `https://<your-render-service>.onrender.com/docs`
+  - `https://linear-regression-model-cmw6.onrender.com/docs`
 
 Use that `/docs` URL as your public Swagger link for submission.
